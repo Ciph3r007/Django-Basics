@@ -91,11 +91,16 @@ def say_hello(request):
     # collection.save()  # Instant execution
 
     # updating record
-    collection = Collection.objects.get(pk=11)
-    collection.featured_product = None
-    collection.save()
-    # OR
-    Collection.objects.filter(pk=11).update(featured_product_id=None) # No intellisense
+    # collection = Collection.objects.get(pk=11)
+    # collection.featured_product = None
+    # collection.save()
+    # # OR
+    # Collection.objects.filter(pk=11).update(featured_product_id=None) # No intellisense
+
+    # deleting record
+    Collection(pk=11).delete()
+    # deleting by filtering
+    Collection.objects.filter(pk__gte = 11).delete()
 
 
     return render(request, 'hello.html', {'name': 'Pithibi', 'result':list(query_set)})
