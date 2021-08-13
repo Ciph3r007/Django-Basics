@@ -17,6 +17,11 @@ def say_hello(request):
     query_set = Product.objects\
                        .filter(unit_price__range=(20, 30), inventory__gt=10)\
                        .order_by('unit_price', '-title').reverse()
+
+    # select and limit
+    query_set = Product.objects.all()
+    query_set = Product.objects.values('title', 'unit_price')[5:10]
+
     
 
     for product in query_set:
