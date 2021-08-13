@@ -25,11 +25,14 @@ def say_hello(request):
     query_set = Product.objects.values_list('title', 'unit_price')[5:10] # returns tuples (no column access, only values)
     query_set = Product.objects.defer('title')[5:10] # returns objects [inverse selection]
 
-    # # products that have been ordered
-    # query_set = Product.objects.filter(
-    #     id__in=OrderItem.objects.values('product_id').distinct())\
-    #         .order_by('title') # values_list is usable too
+    # products that have been ordered
+    query_set = Product.objects.filter(
+        id__in=OrderItem.objects.values('product_id').distinct())\
+            .order_by('title') # values_list is usable too
 
+    # Inner Join
+    # [for 1 to many]
+    query_set = Product.objects.select_related('collection')
 
     for product in query_set:
         print(product)
