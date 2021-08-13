@@ -6,13 +6,13 @@
     <h1>Hello World</h1>
     {% endif %}
 
-    {% comment %}
     <ul>
       {% for product in products %}
-      <li>{{ product }} ${{1 }}}</li>
+      <li>{{ product.title }} ${{ product.unit_price }}</li>
       {% endfor %}
     </ul>
 
+    {% comment %}
     <ul>
       {% for order in orders %}
       <li>{{ order.id }} -- {{ order.customer.first_name }}</li>

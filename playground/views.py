@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.db import transaction
+from django.db import transaction, connection
 from django.db.models import Q, F, Value, Func, Count, Avg, ExpressionWrapper
 from django.db.models.fields import DecimalField
 from django.db.models.functions import Concat
@@ -104,17 +104,23 @@ def say_hello(request):
 
     # transactions
     # alternatively @transaction.atomic() decorator could have been used on the say_hello() function
-    with transaction.atomic():
-        order = Order()
-        order.customer_id = 1
-        order.save()
+    # with transaction.atomic():
+    #     order = Order()
+    #     order.customer_id = 1
+    #     order.save()
 
-        item = OrderItem()
-        item.order = order
-        item.product_id = 1
-        item.quantity = 1
-        item.unit_price = 10
-        item.save()
+    #     item = OrderItem()
+    #     item.order = order
+    #     item.product_id = 1
+    #     item.quantity = 1
+    #     item.unit_price = 10
+    #     item.save()
 
+    # raw sql query
+    # for particular model
+    query_set = Product.objects.raw('SELECT id, title, unit_price FROM store_product WHERE id < 10')
+    # for the whole database
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT * FROM store_product WHERE id < 10')
 
-    return render(request, 'hello.html', {'name': 'Pithibi', 'result':list(query_set)})
+    return render(request, 'hello.html', {'name': 'Pithibi', 'products':list(query_set)})
