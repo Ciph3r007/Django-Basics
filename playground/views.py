@@ -1,8 +1,10 @@
-from django.db.models.fields import DecimalField
 from django.shortcuts import render
+from django.db.models.fields import DecimalField
 from django.db.models import Q, F, Value, Func, Count, Avg, ExpressionWrapper
 from django.db.models.functions import Concat
+from django.contrib.contenttypes.models import ContentType
 from store.models import Customer, Product, OrderItem, Order
+from tags.models import TaggedItem
 
 def say_hello(request):
     # price between 20 and 30 and inventory > 10
@@ -52,7 +54,7 @@ def say_hello(request):
     )
 
     # aggregate functions
-    query_set = Product.objects.aggregate(Avg('unit_price'))
+    # avg_price = Product.objects.aggregate(Avg('unit_price')) # Fetches instantly
 
     # orders of customers using group by
     # 1 to many relationship, but should use 'order' instead of 'order_set'
@@ -69,4 +71,13 @@ def say_hello(request):
         discounted_price=discounted_price
     )
     
-    return render(request, 'hello.html', {'name': 'Pithibi', 'orders':list(query_set)})
+    # generic relationships
+    content_type = ContentType.objects.get_for_model(Product)
+    query_set = TaggedItem.objects\
+        .select_related('tag')\
+        .filter(
+            content_type=content_type,
+            object_id=1
+        )
+
+    return render(request, 'hello.html', {'name': 'Pithibi', 'result':list(query_set)})
