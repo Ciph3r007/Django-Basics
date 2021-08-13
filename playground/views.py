@@ -1,9 +1,10 @@
+from django.db.models.expressions import Col
 from django.shortcuts import render
 from django.db.models.fields import DecimalField
 from django.db.models import Q, F, Value, Func, Count, Avg, ExpressionWrapper
 from django.db.models.functions import Concat
 from django.contrib.contenttypes.models import ContentType
-from store.models import Customer, Product, OrderItem, Order
+from store.models import Collection, Customer, Product, OrderItem, Order
 from tags.models import TaggedItem
 
 def say_hello(request):
@@ -82,5 +83,11 @@ def say_hello(request):
 
     # using custom manager for generic relationship
     query_set = TaggedItem.objects.get_tags_for(Product, 1)
+
+    # inserting record
+    collection = Collection()
+    collection.title = 'The Witcher 3'
+    collection.featured_product = Product(pk=1)
+    collection.save()  # Instant execution
 
     return render(request, 'hello.html', {'name': 'Pithibi', 'result':list(query_set)})
