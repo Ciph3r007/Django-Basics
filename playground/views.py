@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Q, F
-from store.models import Product, OrderItem
+from store.models import Product, OrderItem, Order
 
 def say_hello(request):
     # price between 20 and 30 and inventory > 10
@@ -31,8 +31,11 @@ def say_hello(request):
             .order_by('title') # values_list is usable too
 
     # Inner Join
-    # [for 1 to many]
+    # [for many to 1]
     query_set = Product.objects.select_related('collection')
+    # [for many to many]
+    query_set = Product.objects.prefetch_related('promotions')
+
 
     for product in query_set:
         print(product)
