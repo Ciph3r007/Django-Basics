@@ -9,6 +9,15 @@ def say_hello(request):
     query_set = Product.objects.filter(~Q(unit_price__range=(20, 30)) | Q(inventory__gt=10))
     # inventory = collection_id
     query_set = Product.objects.filter(inventory=F('collection__id'))
+    # sorting
+    query_set = Product.objects\
+                       .filter(unit_price__range=(20, 30), inventory__gt=10)\
+                       .order_by('-unit_price', 'title')
+    # sem shite
+    query_set = Product.objects\
+                       .filter(unit_price__range=(20, 30), inventory__gt=10)\
+                       .order_by('unit_price', '-title').reverse()
+    
 
     for product in query_set:
         print(product)
