@@ -85,9 +85,17 @@ def say_hello(request):
     query_set = TaggedItem.objects.get_tags_for(Product, 1)
 
     # inserting record
-    collection = Collection()
-    collection.title = 'The Witcher 3'
-    collection.featured_product = Product(pk=1)
-    collection.save()  # Instant execution
+    # collection = Collection()
+    # collection.title = 'The Witcher 3'
+    # collection.featured_product = Product(pk=1)
+    # collection.save()  # Instant execution
+
+    # updating record
+    collection = Collection.objects.get(pk=11)
+    collection.featured_product = None
+    collection.save()
+    # OR
+    Collection.objects.filter(pk=11).update(featured_product_id=None) # No intellisense
+
 
     return render(request, 'hello.html', {'name': 'Pithibi', 'result':list(query_set)})
