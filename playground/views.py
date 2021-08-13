@@ -20,13 +20,16 @@ def say_hello(request):
 
     # select and limit
     query_set = Product.objects.all() # returns objects
-    query_set = Product.objects.values('title', 'unit_price')[5:10] # returns dictionary
-    query_set = Product.objects.values_list('title', 'unit_price')[5:10] # returns tuples
+    query_set = Product.objects.only('title')[5:10]  # returns objects (out of column access will result in multiple queries)
+    query_set = Product.objects.values('title')[5:10] # returns dictionary ((out of column access will return null))
+    query_set = Product.objects.values_list('title', 'unit_price')[5:10] # returns tuples (no column access, only values)
+    query_set = Product.objects.defer('title')[5:10] # returns objects [inverse selection]
 
-    # products that have been ordered
-    query_set = Product.objects.filter(id__in=OrderItem.objects.values('product_id').distinct()).order_by('title') # values_list is usable too
+    # # products that have been ordered
+    # query_set = Product.objects.filter(
+    #     id__in=OrderItem.objects.values('product_id').distinct())\
+    #         .order_by('title') # values_list is usable too
 
-    
 
     for product in query_set:
         print(product)
