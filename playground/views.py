@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.db.models import Q, F
-from store.models import Product
+from store.models import Product, OrderItem
 
 def say_hello(request):
     # price between 20 and 30 and inventory > 10
@@ -22,6 +22,9 @@ def say_hello(request):
     query_set = Product.objects.all() # returns objects
     query_set = Product.objects.values('title', 'unit_price')[5:10] # returns dictionary
     query_set = Product.objects.values_list('title', 'unit_price')[5:10] # returns tuples
+
+    # products that have been ordered
+    query_set = Product.objects.filter(id__in=OrderItem.objects.values('product_id').distinct()).order_by('title') # values_list is usable too
 
     
 
