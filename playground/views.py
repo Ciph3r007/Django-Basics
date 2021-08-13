@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.db.models import Q
+from django.db.models import Q, F
 from store.models import Product
 
 def say_hello(request):
@@ -7,6 +7,8 @@ def say_hello(request):
     query_set = Product.objects.filter(unit_price__range=(20, 30), inventory__gt=10)
     # price not between 20 and 30 and inventory > 10
     query_set = Product.objects.filter(~Q(unit_price__range=(20, 30)) | Q(inventory__gt=10))
+    # inventory = collection_id
+    query_set = Product.objects.filter(inventory=F('collection__id'))
 
     for product in query_set:
         print(product)
