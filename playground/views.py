@@ -36,7 +36,11 @@ def say_hello(request):
     # [for many to many]
     query_set = Product.objects.prefetch_related('promotions')
 
+    # last 5 orders with customer and items
+    query_set = Order.objects.select_related('customer').order_by('-placed_at')[:5]\
+                             .prefetch_related('orderitem_set__product')
+
 
     for product in query_set:
         print(product)
-    return render(request, 'hello.html', {'name': 'Pithibi', 'products':list(query_set)})
+    return render(request, 'hello.html', {'name': 'Pithibi', 'orders':list(query_set)})

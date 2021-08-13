@@ -6,9 +6,20 @@
     <h1>Hello World</h1>
     {% endif %}
 
-    <ul>
+    <!-- <ul>
       {% for product in products %}
-      <li>{{ product.title }} ${{ product.unit_price }}}</li>
+      <li>{{ product }} ${{1 }}}</li>
+      {% endfor %}
+    </ul> -->
+
+    <ul>
+      {% for order in orders %}
+      <li>{{ order.id }} -- {{ order.customer.first_name }}</li>
+      <ul>
+        {% for item in order.orderitem_set.all %}
+        <li>({{ item.product.title }} @ ${{ item.unit_price }}) x {{ item.quantity}}}</li>
+        {% endfor %}
+      </ul>
       {% endfor %}
     </ul>
   </body>
