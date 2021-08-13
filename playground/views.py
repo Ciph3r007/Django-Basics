@@ -19,8 +19,9 @@ def say_hello(request):
                        .order_by('unit_price', '-title').reverse()
 
     # select and limit
-    query_set = Product.objects.all()
-    query_set = Product.objects.values('title', 'unit_price')[5:10]
+    query_set = Product.objects.all() # returns objects
+    query_set = Product.objects.values('title', 'unit_price')[5:10] # returns dictionary
+    query_set = Product.objects.values_list('title', 'unit_price')[5:10] # returns tuples
 
     
 
