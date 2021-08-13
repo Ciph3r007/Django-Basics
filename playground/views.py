@@ -1,7 +1,7 @@
-from django.db.models.expressions import Col
 from django.shortcuts import render
-from django.db.models.fields import DecimalField
+from django.db import transaction
 from django.db.models import Q, F, Value, Func, Count, Avg, ExpressionWrapper
+from django.db.models.fields import DecimalField
 from django.db.models.functions import Concat
 from django.contrib.contenttypes.models import ContentType
 from store.models import Collection, Customer, Product, OrderItem, Order
@@ -98,9 +98,23 @@ def say_hello(request):
     # Collection.objects.filter(pk=11).update(featured_product_id=None) # No intellisense
 
     # deleting record
-    Collection(pk=11).delete()
-    # deleting by filtering
-    Collection.objects.filter(pk__gte = 11).delete()
+    # Collection(pk=11).delete()
+    # # deleting by filtering
+    # Collection.objects.filter(pk__gte = 11).delete()
+
+    # transactions
+    # alternatively @transaction.atomic() decorator could have been used on the say_hello() function
+    with transaction.atomic():
+        order = Order()
+        order.customer_id = 1
+        order.save()
+
+        item = OrderItem()
+        item.order = order
+        item.product_id = 1
+        item.quantity = 1
+        item.unit_price = 10
+        item.save()
 
 
     return render(request, 'hello.html', {'name': 'Pithibi', 'result':list(query_set)})
