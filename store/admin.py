@@ -7,10 +7,24 @@ from . import models
 # Register your models here.
 @admin.register(models.Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'membership']
+    list_display = ['first_name', 'last_name', 'membership', 'orders_count']
     ordering = ['first_name', 'last_name']
     list_editable = ['membership']
     list_per_page = 20
+
+    @admin.display(ordering='orders_count')
+    def orders_count(self, customer):
+        url = reverse('admin:store_order_changelist')\
+            + '?' + urlencode({
+                'customer__id': str(customer.id)
+            })
+        
+        return format_html(f'<a href={url}>{customer.orders_count}</a>')
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            orders_count=Count('order')
+        )
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
