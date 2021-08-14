@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models.aggregates import Count
 from . import models
 
 # Register your models here.
@@ -27,8 +28,6 @@ class ProductAdmin(admin.ModelAdmin):
     @admin.display(ordering='collection')
     def collection_name(self, product):
         return product.collection.title
-    
-
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -36,4 +35,16 @@ class OrderAdmin(admin.ModelAdmin):
     ordering = ['-placed_at']
     list_per_page = 20
 
-admin.site.register(models.Collection)
+@admin.register(models.Collection)
+class CollectionAdmin(admin.ModelAdmin):
+    list_display = ['title', 'products_count']
+
+    @admin.display(ordering='products_count')
+    def products_count(self, collection):
+        return collection.products_count
+    
+    # overrides base query
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            products_count=Count('product')
+        )
