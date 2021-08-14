@@ -4,7 +4,7 @@ from . import models
 # Register your models here.
 @admin.register(models.Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['Customer', 'first_name', 'last_name', 'membership']
+    list_display = ['first_name', 'last_name', 'membership']
     ordering = ['first_name', 'last_name']
     list_editable = ['membership']
     list_per_page = 20
