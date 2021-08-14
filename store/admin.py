@@ -8,9 +8,10 @@ from . import models
 @admin.register(models.Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'membership', 'orders_count']
-    ordering = ['first_name', 'last_name']
     list_editable = ['membership']
     list_per_page = 20
+    ordering = ['first_name', 'last_name']
+    search_fields = ['first_name__istartswith', 'last_name__istartswith']
 
     @admin.display(ordering='orders_count')
     def orders_count(self, customer):
@@ -32,7 +33,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ['unit_price']
     list_per_page = 20
     # Displaying 'collection' directly is much better. Needed only when retrieving unavailable fields
-    list_select_related = ['collection'] 
+    list_select_related = ['collection']
 
     @admin.display(ordering='inventory')
     def inventory_status(self, product):
@@ -48,8 +49,8 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'placed_at', 'payment_status', 'customer']
-    ordering = ['-placed_at']
     list_per_page = 20
+    ordering = ['-placed_at']
 
 @admin.register(models.Collection)
 class CollectionAdmin(admin.ModelAdmin):
