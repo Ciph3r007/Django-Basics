@@ -52,6 +52,7 @@ class ProductAdmin(admin.ModelAdmin):
         'slug': ['title']
     }
     autocomplete_fields = ['collection']
+    search_fields = ['title']
     list_display = ['title', 'unit_price', 'inventory_status', 'collection_name']
     list_editable = ['unit_price']
     list_filter = ['collection', 'last_update', InventoryFilter]
@@ -78,9 +79,17 @@ class ProductAdmin(admin.ModelAdmin):
             f'{updated_count} product are successfully updated'
         )
 
+# alternative: admin.StackedInline
+class OrderItemInline(admin.TabularInline):  
+    model = models.OrderItem
+    autocomplete_fields = ['product']
+    min_num = 1
+    extra = 0
+
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     autocomplete_fields = ['customer']
+    inlines = [OrderItemInline]
     list_display = ['id', 'placed_at', 'payment_status', 'customer']
     list_per_page = 20
     ordering = ['-placed_at']
