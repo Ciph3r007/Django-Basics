@@ -47,6 +47,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
+    actions = ['clear_inventory']
     list_display = ['title', 'unit_price', 'inventory_status', 'collection_name']
     list_editable = ['unit_price']
     list_filter = ['collection', 'last_update', InventoryFilter]
@@ -64,6 +65,14 @@ class ProductAdmin(admin.ModelAdmin):
     @admin.display(ordering='collection')
     def collection_name(self, product):
         return product.collection.title
+    
+    @admin.action(description='Clear inventory')
+    def clear_inventory(self, request, queryset):
+        updated_count = queryset.update(inventory=0)
+        self.message_user(
+            request,
+            f'{updated_count} product are successfully updated'
+        )
 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
