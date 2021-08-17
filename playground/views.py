@@ -42,6 +42,7 @@ def say_hello(request):
     query_set = Product.objects.prefetch_related('promotions')
 
     # last 5 orders with customer and items
+    # should use 'orderitem_set' because of 1 to many relationship
     query_set = Order.objects.select_related('customer').order_by('-placed_at')[:5]\
                              .prefetch_related('orderitem_set__product')
     
